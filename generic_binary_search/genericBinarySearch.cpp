@@ -7,7 +7,7 @@ void* BinarySearch(void* key, void* arr, int arrSize, int elemSize, int (*cmp)(v
 		return NULL;
 	}
 
-	void* low = arr;;
+	void* low = arr;
 	void* high = (char*)arr + arrSize;
 
 	int result = 0;
