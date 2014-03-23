@@ -8,67 +8,72 @@ static bool compare(int a, int b)
     return a > b ? true : false;
 }
 
-static void print(const std::vector<std::vector<int> > &ivec)
+static void print(const std::vector<std::vector<int> > &vec)
 {
-    for (unsigned int i = 0; i < ivec.size(); i++)
+    for (unsigned int i = 0; i < vec.size(); i++)
     {
-        for (unsigned int j = 0; j < ivec[i].size(); j++)
+        printf("combination no:%d   [ ", (i + 1) );
+        for (unsigned int j = 0; j < vec[i].size(); j++)
         {
-            printf("%d ", ivec[i][j]);
+            printf("%d ", vec[i][j]);
         }
-        printf("\n");
+
+        printf("]\n");
     }
 }
 
-static void store_result(int *arr, const std::vector<int> &ivec, std::vector<std::vector<int> > &result)
+static void store_combination(int *arr, const std::vector<int> &ivec, std::vector<std::vector<int> > &result)
 {
-    std::vector<int> res;
+    std::vector<int> combination;
     for (unsigned int index = 0; index < ivec.size(); index++)
     {
         if (ivec[index] == 1)
         {
-            res.push_back(arr[index]);
+            combination.push_back(arr[index]);
         }
     }
 
-    result.push_back(res);
+    result.push_back(combination);
 }
 
 static void combination_total(int *arr, int total)
 {
-	printf("------------combination_total------------\n");
+    printf("------------combination_total------------\n");
 
     std::vector<std::vector<int> > result;
 
     for (int i = 0; i < (1 << total); i++)
     {
-        std::vector<int> res;
+        std::vector<int> combination;
         for (int j = 0; j < total; j++)
         {
             if (((i >> j) & 1) == 1)
             {
-                res.push_back(arr[j]);
+                combination.push_back(arr[j]);
             }
         }
-        result.push_back(res);
+
+        if (combination.size() != 0)
+        {
+            result.push_back(combination);
+        }
+
     }
 
     print(result);
 }
 
-static void combination_num(int *arr, int num, int total)
+static void combination_k(int *arr, int k, int total)
 {
-	printf("\n------------combination_num:%d------------\n", num);
-
     std::vector<std::vector<int> > result;
 
     //initial first combination like: 1, 1, 1, 0, 0, 0
     std::vector<int> ivec(total, 0);
-    for (int i = 0; i < num; i++)
+    for (int i = 0; i < k; i++)
     {
         ivec[i] = 1;
     }
-    store_result(arr, ivec, result);
+    store_combination(arr, ivec, result);
 
     for (int i = 0; i < total - 1; i++)
     {
@@ -80,7 +85,7 @@ static void combination_num(int *arr, int num, int total)
             //step2: move all 1 before ivce[i] to left
             std::sort(ivec.begin(), ivec.begin() + i, compare);
 
-            store_result(arr, ivec, result);
+            store_combination(arr, ivec, result);
 
             //try do step1 and 2 over again
             i = -1;
@@ -90,16 +95,50 @@ static void combination_num(int *arr, int num, int total)
     print(result);
 }
 
+static void combination_k_recursion(int *arr, int offset, int k, int total, std::vector<int> &combination, std::vector<std::vector<int> > &result)
+{
+    if (k == 0)
+    {
+        result.push_back(combination);
+        return;
+    }
+
+    int size = total - k;
+    for (int i = offset; i <= size; i++)
+    {
+        combination.push_back(arr[i]);
+        combination_k_recursion(arr, i + 1, k - 1, total, combination, result);
+        combination.pop_back();
+    }
+
+}
+
 
 int main(int argc, char const *argv[])
 {
-    const int TOTAL = 3;
-    int arr[TOTAL] = {1, 2, 3};
+    const int TOTAL = 5;
+    int arr[TOTAL] = {0};
+    for (int i = 0; i < TOTAL; i++)
+    {
+        arr[i] = i + 1;
+    }
+
     combination_total(arr, TOTAL);
 
-    for (int num = 1; num <= TOTAL; num++)
+    for (int k = 1; k <= TOTAL; k++)
     {
-        combination_num(arr, num, TOTAL);
+        printf("\n------------combination_k:%d------------\n", k);
+        combination_k(arr, k, TOTAL);
+    }
+
+    for (int k = 1; k <= TOTAL; k++)
+    {
+        std::vector<int> combination;
+        std::vector<std::vector<int> > result;
+
+        printf("\n------------combination_k_recursion:%d------------\n", k);
+        combination_k_recursion(arr, 0, k, TOTAL, combination, result);
+        print(result);
     }
 
     return 0;
