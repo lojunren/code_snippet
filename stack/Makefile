@@ -1,8 +1,8 @@
-CXX = gcc
+CXX = g++
 CXXFLAGS += -g -Wall -Wextra
 
 TARGETS = main
-TARGETS_C_FILE = $(TARGETS).c
+TARGETS_C_FILE = $(TARGETS).cc
 
 CLEANUP = rm -f excute
 

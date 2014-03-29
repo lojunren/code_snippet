@@ -1,4 +1,6 @@
-#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 void swap(void *vp1, void *vp2, int size)
 {
@@ -21,8 +23,9 @@ int main(int argc, char const *argv[])
     int y = 4;
 
     swap(&x, &y, sizeof(int));
-    std::cout << x << std::endl;
-    std::cout << y << std::endl;
+
+    printf("x:%d\n", x);
+    printf("y:%d\n", y);
 
     return 0;
 }
