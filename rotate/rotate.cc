@@ -9,8 +9,8 @@ static void Rotate(void *front, void *middle, void *end)
     if (front == NULL || middle == NULL || end == NULL)
         return;
 
-    int frontSize = (char *)middle - (char *)front;
-    int backSize = (char *)end - (char *)middle;
+    unsigned int frontSize = (unsigned int)((char *)middle - (char *)front);
+    unsigned int backSize = (unsigned int)((char *)end - (char *)middle);
 
     char *buffer = (char *)malloc(frontSize);
     if (buffer == NULL)

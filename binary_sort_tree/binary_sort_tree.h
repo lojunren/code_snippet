@@ -16,21 +16,22 @@ typedef int (*cmp)(void *elem1, void *elem2) CMP_FUNC;
 
 class BinarySortTree
 {
-public: 
-    BinarySortTree(): ptree_(NULL) {}
+public:
+    BinarySortTree(): root_(NULL) {}
     ~BinarySortTree();
-    int init(void *elem_arr, int arr_len, int elem_size);
-    int insert_node(void *elemS, int elem_size, CMP_FUNC cmp);
-    int delete_noe(void *elemS, int elem_size, CMP_FUNC cmp);
-    int find_node(BSTree ptree, BSTree parent, BSTree &p, void *elemS, int elem_size, CMP_FUNC cmp);
-
-    void traverse_tree();
+    int init(void *elem_arr, int arr_len, int elem_size, CMP_FUNC cmp);
+    int insert_node(void *key, int elem_size, CMP_FUNC cmp);
+    int delete_noe(void *key, CMP_FUNC cmp);
+    int find_node(void *key, CMP_FUNC cmp) const;
 
 private:
-    void delete_tree();
+    int erase(BSTree &ptree);
+    int destroy_tree(BSTree ptree);
+    int delete(BSTree &ptree, void *key, CMP_FUNC cmp);
+    int search_node(BSTree ptree, BSTree parent, BSTree &p, void *key, CMP_FUNC cmp) const;
 
 private:
-    BSTree ptree_;
+    BSTree root_;
 };
 
 

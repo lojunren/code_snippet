@@ -1,0 +1,1 @@
+add_executable(bst binary_sort_tree.cc main.cc)

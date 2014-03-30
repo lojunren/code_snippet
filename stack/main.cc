@@ -1,4 +1,4 @@
-#include "stack/stack.h"
+#include "stack.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,8 +21,8 @@ int main(int argc, char const *argv[])
         stack_push(&stk, &copy);
     }
 
-    char *name = '';
-    for (i = 0; i < 3; i++)
+    char *name;
+    for (int i = 0; i < 3; i++)
     {
         stack_pop(&stk, &name);
         printf("%s\n", name);

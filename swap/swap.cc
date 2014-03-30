@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void swap(void *vp1, void *vp2, int size)
+static void swap(void *vp1, void *vp2, unsigned int size)
 {
     if (vp1 == NULL || vp2 == NULL)
         return;

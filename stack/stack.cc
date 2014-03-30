@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-void stack_init(Stack *s, int elemSize, void (*pFunc)(void *))
+void stack_init(Stack *s, unsigned int elemSize, void (*pFunc)(void *))
 {
     if (s == NULL || elemSize == 0)
     {
@@ -34,9 +34,9 @@ void stack_dispose(Stack *s)
 
     if (s->freefunc != NULL)
     {
-        for (int i = 0; i < s->logLength; i++)
+        for (unsigned int i = 0; i < s->logLength; i++)
         {
-            s->freefunc((char *)s->elemS + i * s->elemSize);
+            s->freefunc((char *)s->elemS + (i * s->elemSize));
         }
     }
 
