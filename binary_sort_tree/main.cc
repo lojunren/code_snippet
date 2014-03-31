@@ -1,4 +1,5 @@
 #include "binary_sort_tree.h"
+#include <stdio.h>
 
 #define ARR_LEN 16
 
@@ -12,11 +13,11 @@ static int compare(void *elem1, void *elem2)
 
 static void print(int ret)
 {
-    if (ret = E_FAILURE)
+    if (ret == E_FAILURE)
     {
         printf("return failed!\n");
     }
-    else if (ret = E_SUCCESS)
+    else if (ret == E_SUCCESS)
     {
         printf("return success!\n");
     }

@@ -1,6 +1,6 @@
 #include "binary_sort_tree.h"
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 
 
 BinarySortTree::~BinarySortTree()
@@ -9,7 +9,7 @@ BinarySortTree::~BinarySortTree()
     destroy_tree(ptree);
 }
 
-int BinarySortTree::init(void *elem_arr, int arr_len, int elem_size)
+int BinarySortTree::init(void *elem_arr, int arr_len, unsigned int elem_size, CMP_FUNC cmp)
 {
     if (elem_arr == NULL || arr_len <= 0 || elem_size <= 0)
     {
@@ -20,7 +20,7 @@ int BinarySortTree::init(void *elem_arr, int arr_len, int elem_size)
     for (int offset = 0; offset < arr_len; offset += elem_size)
     {
         void *elemS = (char *)elem_arr + offset;
-        if (insert_node(elemS, elem_size) == E_FAILURE)
+        if (insert_node(elemS, elem_size, cmp) == E_FAILURE)
         {
             printf("insert node failed!\n");
             return E_FAILURE;
@@ -30,11 +30,11 @@ int BinarySortTree::init(void *elem_arr, int arr_len, int elem_size)
     return E_SUCCESS;
 }
 
-int BinarySortTree::insert_node(void *key, int elem_size, CMP_FUNC cmp)
+int BinarySortTree::insert_node(void *key, unsigned int elem_size, CMP_FUNC cmp)
 {
     if (key == NULL || elem_size <= 0 || cmp == NULL)
     {
-        printf("insert, invalid parameter!\n")
+        printf("insert, invalid parameter!\n");
         return E_FAILURE;
     }
 
@@ -57,17 +57,17 @@ int BinarySortTree::insert_node(void *key, int elem_size, CMP_FUNC cmp)
         memcpy(pNew->data, key, elem_size);
 
         //root node
-        if (ptree = NULL)
+        if (ptree == NULL)
         {
             ptree = pNew;
         }
-        else if (cmp(key, root_->lNode->node) < 0)
+        else if (cmp(key, root_->lNode->data) < 0)
         {
             ptree->lNode = pNew;
         }
         else
         {
-            ptree->lRight = pNew;
+            ptree->rNode = pNew;
         }
     }
     else
@@ -82,12 +82,12 @@ int BinarySortTree::delete_node(void *key, CMP_FUNC cmp)
 {
     if (key == NULL ||  cmp == NULL)
     {
-        printf("delete, invalid parameter!\n")
+        printf("delete_node, invalid parameter!\n");
         return E_FAILURE;
     }
 
     BSTree ptree = root_;
-    return delete(ptree, elem_size, cmp);
+    return erase_node(ptree, key, cmp);
 
 }
 
@@ -96,17 +96,19 @@ int BinarySortTree::destroy_tree(BSTree ptree)
     if(ptree != NULL)
     {
         destroy_tree(ptree->lNode);
-        destroy_tree(ptree->lRight);
+        destroy_tree(ptree->rNode);
         free(ptree->data);
         free(ptree);
     }
+
+    return E_SUCCESS;
 }
 
-int BinarySortTree::delete(BSTree &ptree, void *key, CMP_FUNC cmp)
+int BinarySortTree::erase_node(BSTree &ptree, void *key, CMP_FUNC cmp)
 {
     if (ptree == NULL)
     {
-        printf("delete, ptree is NULL! \n");
+        printf("erase_node, ptree is NULL! \n");
         return E_FAILURE;
     }
     else
@@ -118,11 +120,11 @@ int BinarySortTree::delete(BSTree &ptree, void *key, CMP_FUNC cmp)
         }
         else if (result > 0)
         {
-            return delete(ptree->lNode, key, cmp);
+            return erase_node(ptree->lNode, key, cmp);
         }
         else
         {
-            return delete(ptree->rNode, key, cmp);
+            return erase_node(ptree->rNode, key, cmp);
         }
     }
 }
@@ -137,7 +139,7 @@ int BinarySortTree::erase(BSTree &ptree)
         free(p->data);
         free(p);
     }
-    else if (p->rNode == NULL)
+    else if (ptree->rNode == NULL)
     {
         p = ptree;
         ptree = p->lNode;
@@ -163,7 +165,7 @@ int BinarySortTree::erase(BSTree &ptree)
     return E_SUCCESS;
 }
 
-int BinarySortTree::find_node(void *key, CMP_FUNC cmp)
+int BinarySortTree::find_node(void *key, CMP_FUNC cmp) const
 {
     if (key == NULL || cmp == NULL)
     {
@@ -177,7 +179,7 @@ int BinarySortTree::find_node(void *key, CMP_FUNC cmp)
 }
 
 
-int BinarySortTree::search_node(BSTree ptree, BSTree parent, BSTree &p, void *key, CMP_FUNC cmp)
+int BinarySortTree::search_node(BSTree ptree, BSTree parent, BSTree &p, void *key, CMP_FUNC cmp) const
 {
     if (key == NULL || cmp == NULL)
     {
@@ -200,11 +202,11 @@ int BinarySortTree::search_node(BSTree ptree, BSTree parent, BSTree &p, void *ke
     }
     else if (result > 0)
     {
-        return search_node(ptree->lNode, parent, p, key, elem_size);
+        return search_node(ptree->lNode, parent, p, key, cmp);
     }
     else
     {
-        return search_node(ptree->rNode, parent, p, key, elem_size);
+        return search_node(ptree->rNode, parent, p, key, cmp);
     }
 
 }
