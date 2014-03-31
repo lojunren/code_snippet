@@ -1,5 +1,6 @@
 #include "binary_sort_tree.h"
 #include <stdio.h>
+#include <string>
 
 #define ARR_LEN 16
 
@@ -11,15 +12,15 @@ static int compare(void *elem1, void *elem2)
     return *vp1 - *vp2;
 }
 
-static void print(int ret)
+static void print(const std::string &str, int ret)
 {
     if (ret == E_FAILURE)
     {
-        printf("return failed!\n");
+        printf("%s failed!\n", str.data());
     }
     else if (ret == E_SUCCESS)
     {
-        printf("return success!\n");
+        printf("%s success!\n", str.data());
     }
 }
 
@@ -38,24 +39,23 @@ static void test()
     printf("------------key is 10---------\n");
     int key = 10;
     int ret = ptree.find_node(&key, compare);
-    print(ret);
+    print("find_node:10", ret);
 
     printf("------------key is 20---------\n");
     key = 20;
     ret = ptree.insert_node(&key, sizeof(int), compare);
-    print(ret);
+    print("insert_node:20", ret);
     ret = ptree.find_node(&key, compare);
-    print(ret);
-    ret = ptree.delete_node(&key, compare);
-    print(ret);
+    print("find_node:20", ret);
+    // ret = ptree.delete_node(&key, compare);
+    // print(ret);
+    // ret = ptree.find_node(&key, compare);
+    // print(ret);
 
     printf("------------key is 30---------\n");
     key = 30;
     ret = ptree.find_node(&key, compare);
-    print(ret);
-    ret = ptree.delete_node(&key, compare);
-    print(ret);
-
+    print("find_node:30", ret);
 }
 
 

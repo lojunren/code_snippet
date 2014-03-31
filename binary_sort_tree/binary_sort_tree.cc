@@ -9,17 +9,17 @@ BinarySortTree::~BinarySortTree()
     destroy_tree(ptree);
 }
 
-int BinarySortTree::init(void *elem_arr, int arr_len, unsigned int elem_size, CMP_FUNC cmp)
+int BinarySortTree::init(void *elem_arr, unsigned int arr_len, unsigned int elem_size, CMP_FUNC cmp)
 {
-    if (elem_arr == NULL || arr_len <= 0 || elem_size <= 0)
+    if (elem_arr == NULL || arr_len == 0 || elem_size == 0)
     {
         printf("init, invalid parameter!\n");
         return E_FAILURE;
     }
 
-    for (int offset = 0; offset < arr_len; offset += elem_size)
+    for (unsigned int offset = 0; offset < arr_len; offset ++)
     {
-        void *elemS = (char *)elem_arr + offset;
+        void *elemS = (char *)elem_arr + offset * elem_size;
         if (insert_node(elemS, elem_size, cmp) == E_FAILURE)
         {
             printf("insert node failed!\n");
@@ -38,41 +38,61 @@ int BinarySortTree::insert_node(void *key, unsigned int elem_size, CMP_FUNC cmp)
         return E_FAILURE;
     }
 
-    BSTree ptree = NULL;
-    if (search_node(root_, NULL, ptree, key, cmp) == E_FAILURE)
+    BSTree pNew = (BSTree)malloc(sizeof(Node));
+    if (pNew == NULL)
     {
-        BSTree pNew = (BSTree)malloc(sizeof(Node));
-        if (pNew == NULL)
-        {
-            printf("insert, alloc function failed!\n");
-            return E_FAILURE;
-        }
+        printf("insert, alloc function failed!\n");
+        return E_FAILURE;
+    }
 
-        pNew->data = malloc(elem_size);
-        if (pNew->data == NULL)
-        {
-            printf("insert, failed on malloc function!\n");
-            return E_FAILURE;
-        }
-        memcpy(pNew->data, key, elem_size);
+    pNew->data = malloc(elem_size);
+    if (pNew->data == NULL)
+    {
+        printf("insert, failed on malloc function!\n");
+        return E_FAILURE;
+    }
 
-        //root node
-        if (ptree == NULL)
+    memcpy(pNew->data, key, elem_size);
+    pNew->lNode = NULL;
+    pNew->rNode = NULL;
+
+    //root is NULL
+    if (root_ == NULL)
+    {
+        root_ = pNew;
+    }
+    else
+    {
+        return insert(cmp, pNew, root_);
+    }
+
+    return E_SUCCESS;
+}
+
+int BinarySortTree::insert(CMP_FUNC cmp, BSTree pNew, BSTree ptree)
+{
+    int result = cmp(ptree->data, pNew->data);
+    if (result > 0)
+    {
+        if (ptree->lNode != NULL)
         {
-            ptree = pNew;
+            insert(cmp, pNew, ptree->lNode);
         }
-        else if (cmp(key, root_->lNode->data) < 0)
+        else
         {
             ptree->lNode = pNew;
+        }
+    }
+    else if (result <= 0)
+    {
+        if (ptree->rNode != NULL)
+        {
+            insert(cmp, pNew, ptree->rNode);
         }
         else
         {
             ptree->rNode = pNew;
         }
-    }
-    else
-    {
-        printf("element exsit!\n");
     }
 
     return E_SUCCESS;
@@ -93,7 +113,7 @@ int BinarySortTree::delete_node(void *key, CMP_FUNC cmp)
 
 int BinarySortTree::destroy_tree(BSTree ptree)
 {
-    if(ptree != NULL)
+    if (ptree != NULL)
     {
         destroy_tree(ptree->lNode);
         destroy_tree(ptree->rNode);
@@ -173,40 +193,29 @@ int BinarySortTree::find_node(void *key, CMP_FUNC cmp) const
         return E_FAILURE;
     }
 
-    BSTree p;
-    BSTree ptree = root_;
-    return search_node(ptree, NULL, p, key, cmp);
+    return search_node(key, cmp, root_);
 }
 
 
-int BinarySortTree::search_node(BSTree ptree, BSTree parent, BSTree &p, void *key, CMP_FUNC cmp) const
+int BinarySortTree::search_node(void *key, CMP_FUNC cmp, BSTree ptree) const
 {
-    if (key == NULL || cmp == NULL)
+
+    if (ptree != NULL)
     {
-        printf("search_node, invalid parameter!\n");
-        return E_FAILURE;
+        int result = cmp(ptree->data, key);
+        if (result == 0)
+        {
+            return E_SUCCESS;
+        }
+        else if (result > 0)
+        {
+            return search_node(key, cmp, ptree->lNode);
+        }
+        else
+        {
+            return search_node(key, cmp, ptree->rNode);
+        }
     }
 
-    if (ptree == NULL)
-    {
-        p = parent;
-        printf("search_node failed !\n");
-        return E_FAILURE;
-    }
-
-    int result = cmp(ptree->data, key);
-    if (result == 0)
-    {
-        p = ptree;
-        return E_SUCCESS;
-    }
-    else if (result > 0)
-    {
-        return search_node(ptree->lNode, parent, p, key, cmp);
-    }
-    else
-    {
-        return search_node(ptree->rNode, parent, p, key, cmp);
-    }
-
+    return E_FAILURE;
 }

@@ -20,16 +20,17 @@ class BinarySortTree
 public:
     BinarySortTree(): root_(NULL) {} ;
     ~BinarySortTree();
-    int init(void *elem_arr, int arr_len, unsigned int elem_size, CMP_FUNC cmp);
-    int insert_node(void *key, unsigned int elem_size, CMP_FUNC cmp);
     int delete_node(void *key, CMP_FUNC cmp);
     int find_node(void *key, CMP_FUNC cmp) const;
+    int insert_node(void *key, unsigned int elem_size, CMP_FUNC cmp);
+    int init(void *elem_arr, unsigned int arr_len, unsigned int elem_size, CMP_FUNC cmp);
 
 private:
     int erase(BSTree &ptree);
     int destroy_tree(BSTree ptree);
+    int insert(CMP_FUNC cmp, BSTree pNew, BSTree ptree);
     int erase_node(BSTree &ptree, void *key, CMP_FUNC cmp);
-    int search_node(BSTree ptree, BSTree parent, BSTree &p, void *key, CMP_FUNC cmp) const;
+    int search_node(void *key, CMP_FUNC cmp, BSTree ptree) const;
 
 private:
     BSTree root_;
