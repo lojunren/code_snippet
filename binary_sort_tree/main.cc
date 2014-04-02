@@ -41,21 +41,28 @@ static void test()
     int ret = ptree.find_node(&key, compare);
     print("find_node:10", ret);
 
-    printf("------------key is 20---------\n");
+    printf("------------key is 20--------\n");
     key = 20;
-    ret = ptree.insert_node(&key, sizeof(int), compare);
-    print("insert_node:20", ret);
+    ret = ptree.delete_node(&key, compare);
+    print("delete_node:20", ret);
+
+    printf("------------key is 25---------\n");
+    key = 25;
     ret = ptree.find_node(&key, compare);
-    print("find_node:20", ret);
-    // ret = ptree.delete_node(&key, compare);
-    // print(ret);
-    // ret = ptree.find_node(&key, compare);
-    // print(ret);
+    print("find_node:25", ret);
 
     printf("------------key is 30---------\n");
     key = 30;
+    ret = ptree.insert_node(&key, sizeof(int), compare);
+    print("insert_node:30", ret);
     ret = ptree.find_node(&key, compare);
     print("find_node:30", ret);
+    ret = ptree.delete_node(&key, compare);
+    print("delete_node:30", ret);
+    ret = ptree.find_node(&key, compare);
+    print("find_node:30", ret);
+
+
 }
 
 
