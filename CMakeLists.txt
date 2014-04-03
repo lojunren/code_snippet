@@ -22,7 +22,6 @@ set(CXX_FLAGS
  -Werror
  -Wconversion
  -Wno-unused-parameter
- -Wold-style-cast
  -Woverloaded-virtual
  -Wpointer-arith
  -Wshadow

@@ -17,9 +17,9 @@ int BinarySortTree::init(void *elem_arr, unsigned int arr_len, unsigned int elem
         return E_FAILURE;
     }
 
-    for (unsigned int offset = 0; offset < arr_len; offset ++)
+    for (unsigned int index = 0; index < arr_len; index ++)
     {
-        void *elemS = (char *)elem_arr + offset * elem_size;
+        char *elemS = (char *)elem_arr + index * elem_size;
         if (insert_node(elemS, elem_size, cmp) == E_FAILURE)
         {
             printf("insert node failed!\n");
