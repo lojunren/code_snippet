@@ -61,8 +61,6 @@ static void test()
     print("delete_node:30", ret);
     ret = ptree.find_node(&key, compare);
     print("find_node:30", ret);
-
-
 }
 
 
